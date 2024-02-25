@@ -1,0 +1,173 @@
+--- a/IGC/BiFModule/CMakeLists.txt
++++ b/IGC/BiFModule/CMakeLists.txt
+@@ -25,7 +25,7 @@
+     # Get common clang library soname
+     get_target_property(CCLANG_LIB_PATH opencl-clang-lib "IMPORTED_LOCATION")
+     execute_process(
+-      COMMAND readelf -d ${CCLANG_LIB_PATH}
++      COMMAND bash -c "readelf -d ${CCLANG_LIB_PATH} | grep SONAME"
+       RESULT_VARIABLE CCLANG_READELF_RESULT
+       OUTPUT_VARIABLE CCLANG_READELF_CALL)
+     if(CCLANG_READELF_RESULT AND NOT CCLANG_READELF_RESULT EQUAL 0)
+@@ -48,7 +48,7 @@
+     #  0x000000000000000c (INIT)               0x7ab000
+     #  0x000000000000000d (FINI)               0x53ed664
+
+-    set(CLANG_LIB_REGEX "${COMMON_CLANG_LIB_NAME_WITH_PREFIX}([0-9]+|\\.|so)+")
++    set(CLANG_LIB_REGEX "${COMMON_CLANG_LIB_NAME_WITH_PREFIX}([0-9]+|\\.|so)+([0-9][0-9])")
+     string(REGEX MATCH  "${CLANG_LIB_REGEX}" IMPORTED_SONAME "${CCLANG_READELF_CALL}")
+     message("Extraced SONAME: ${IMPORTED_SONAME}")
+
+--- a/IGC/cmake/igc_llvm.cmake
++++ b/IGC/cmake/igc_llvm.cmake
+@@ -73,9 +73,9 @@
+ set(IGC_BUILD__OPAQUE_POINTERS_DISABLE_OPT "-opaque-pointers=0")
+ set(IGC_BUILD__OPAQUE_POINTERS_ENABLE_CLANG "-opaque-pointers")
+
+-if(IGC_BUILD__CLANG_VERSION_MAJOR GREATER_EQUAL 15)
+-  set(IGC_BUILD__OPAQUE_POINTERS_DISABLE_CLANG "-no-opaque-pointers")
+-endif()
++#if(IGC_BUILD__CLANG_VERSION_MAJOR GREATER_EQUAL 15)
++#  set(IGC_BUILD__OPAQUE_POINTERS_DISABLE_CLANG "-no-opaque-pointers")
++#endif()
+
+ # Based on the default behavior for opaque/typed pointers, propagate
+ # corresponding options to all the in-tree calls of clang/opt tools.
+
+--- a/IGC/CMakeLists.txt
++++ b/IGC/CMakeLists.txt
+@@ -272,15 +272,16 @@
+
+ # TODO: Change this flag to opt-out or remove completely once
+ # opaque pointers are fully supported within the IGC stack.
+-option(IGC_OPTION__API_ENABLE_OPAQUE_POINTERS "[Experimental] Enable opaque pointers across the IGC stack.\
+-  Forces opaque pointers' usage in IGC/LLVM passes, OCL Clang FE and built-in functions' bitcode"
+-  OFF)
+-# TODO: Remove the deprecated flag
+-option(IGC_OPTION__LLVM_OPAQUE_POINTERS_ENABLED "[DEPRECATED] Allow usage of opaque pointers within LLVM transformations" OFF)
+-if(IGC_OPTION__LLVM_OPAQUE_POINTERS_ENABLED)
+-  message(WARNING "IGC_OPTION__LLVM_OPAQUE_POINTERS_ENABLED is deprecated. Please use the implied IGC_OPTION__API_ENABLE_OPAQUE_POINTERS flag directly")
+-  set(IGC_OPTION__API_ENABLE_OPAQUE_POINTERS ON)
+-endif()
++#option(IGC_OPTION__API_ENABLE_OPAQUE_POINTERS "[Experimental] Enable opaque pointers across the IGC stack.\
++#  Forces opaque pointers' usage in IGC/LLVM passes, OCL Clang FE and built-in functions' bitcode"
++#  OFF)
++## TODO: Remove the deprecated flag
++#option(IGC_OPTION__LLVM_OPAQUE_POINTERS_ENABLED "[DEPRECATED] Allow usage of opaque pointers within LLVM transformations" OFF)
++#if(IGC_OPTION__LLVM_OPAQUE_POINTERS_ENABLED)
++#  message(WARNING "IGC_OPTION__LLVM_OPAQUE_POINTERS_ENABLED is deprecated. Please use the implied IGC_OPTION__API_ENABLE_OPAQUE_POINTERS flag directly")
++#  set(IGC_OPTION__API_ENABLE_OPAQUE_POINTERS ON)
++#endif()
++set(IGC_OPTION__API_ENABLE_OPAQUE_POINTERS ON)
+
+ option(IGC_OPTION__ENABLE_LIT_TESTS "Enable lit testing for IGC compiler. May require additional tools like llvm lit and opt" OFF)
+
+--- a/IGC/BiFManager/BiFManagerTool.cpp
++++ b/IGC/BiFManager/BiFManagerTool.cpp
+@@ -23,7 +23,7 @@
+ #include <llvm/Transforms/IPO.h>
+ #include <llvm/IR/LegacyPassManager.h>
+ #include <llvm/Support/FileSystem.h>
+-#include <llvm/ADT/Triple.h>
++#include <llvm/TargetParser/Triple.h>
+ #include "common/LLVMWarningsPop.hpp"
+ #include "BiFManagerTool.hpp"
+
+--- a/IGC/BiFManager/main.cpp
++++ b/IGC/BiFManager/main.cpp
+@@ -8,6 +8,7 @@
+
+ #include "common/LLVMWarningsPush.hpp"
+ #include <llvm/Pass.h>
++#include <llvm/IR/AttributeMask.h>
+ #include <llvm/IR/DataLayout.h>
+ #include <llvm/IR/IRPrintingPasses.h>
+ #include <llvm/IR/LLVMContext.h>
+@@ -49,20 +50,21 @@
+ int main(int argc, char* argv[])
+ {
+     LLVMContext Context;
+-#if LLVM_VERSION_MAJOR >= 16
+-    bool enableOpaquePointers = __IGC_OPAQUE_POINTERS_API_ENABLED;
+-
+-    if (enableOpaquePointers)
+-    {
+-      printf("[BiFManager] - Enabling Opaque Pointers\n");
+-    }
+-    else
+-    {
+-      printf("[BiFManager] - Disabling Opaque Pointers\n");
+-    }
+-
+-    Context.setOpaquePointers(enableOpaquePointers);
+-#endif
++//19 errors saying oapque ptrs are always enables
++//#if LLVM_VERSION_MAJOR >= 16
++//    bool enableOpaquePointers = __IGC_OPAQUE_POINTERS_API_ENABLED;
++//
++//    if (enableOpaquePointers)
++//    {
++//      printf("[BiFManager] - Enabling Opaque Pointers\n");
++//    }
++//    else
++//    {
++//      printf("[BiFManager] - Disabling Opaque Pointers\n");
++//    }
++//
++//    Context.setOpaquePointers(enableOpaquePointers);
++//#endif
+
+     cl::ParseCommandLineOptions(argc, argv);
+
+--- a/IGC/BiFManager/BiFManagerTool.cpp
++++ b/IGC/BiFManager/BiFManagerTool.cpp
+@@ -21,6 +21,8 @@
+ #include <llvm/Linker/Linker.h>
+ #include <llvm/IRReader/IRReader.h>
+ #include <llvm/Transforms/IPO.h>
++#include <llvm/LinkAllPasses.h>
++#include <llvm/CodeGen/Passes.h>
+ #include <llvm/IR/LegacyPassManager.h>
+ #include <llvm/Support/FileSystem.h>
+ #include <llvm/TargetParser/Triple.h>
+@@ -467,9 +469,10 @@
+
+         // Do cleanup.
+         llvm::legacy::PassManager mpm;
+-        mpm.add(createGlobalDCEPass());           // Delete unreachable globals.
+-        mpm.add(createStripDeadDebugInfoPass());  // Remove dead debug info.
+-        mpm.add(createStripDeadPrototypesPass()); // Remove dead func decls.
++        mpm.add(createDeadCodeEliminationPass());           // Delete unreachable globals.
++        mpm.add(createStripDebugMachineModulePass(false));  // Remove dead debug info.
++        // idfk wth this is in 19
++        //mpm.add(createStripDeadPrototypesPass()); // Remove dead func decls.
+
+         mpm.run(*kernelM.get());
+         BiFSections[setData.first] = (std::move(kernelM));
+
+--- a/IGC/common/ModuleSplitter.cpp
++++ b/IGC/common/ModuleSplitter.cpp
+@@ -9,8 +9,10 @@
+ #include "common/LLVMWarningsPush.hpp"
+ #include <llvm/ADT/SetVector.h>
+ #include <llvm/IR/InstIterator.h>
++#include <llvm/llvm/LinkAllPasses.h>
+ #include <llvm/Transforms/Utils/Cloning.h>
+ #include <llvm/Transforms/IPO.h>
++#include <llvm/CodeGen/Passes.h>
+ #include "common/LLVMWarningsPop.hpp"
+
+ #include <common/LLVMUtils.h>
+@@ -77,9 +79,9 @@
+
+     // Do cleanup.
+     IGC::IGCPassManager mpm(&_oclContext, "CleanupAfterModuleSplitting");
+-    mpm.add(createGlobalDCEPass());           // Delete unreachable globals.
+-    mpm.add(createStripDeadDebugInfoPass());  // Remove dead debug info.
+-    mpm.add(createStripDeadPrototypesPass()); // Remove dead func decls.
++    mpm.add(createDeadCodeEliminationPass());  // Delete unreachable globals.
++    mpm.add(createStripDebugMachineModulePass(false));       // Remove dead debug info.
++    //mpm.add(createStripDeadPrototypesPass()); // Remove dead func decls.
+
+     mpm.run(*kernelM.get());
+     _splittedModule = std::move(kernelM);

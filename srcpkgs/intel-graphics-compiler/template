@@ -1,0 +1,30 @@
+# Template file for 'intel-graphics-compiler'
+pkgname=intel-graphics-compiler
+version=2.12.5
+revision=1
+archs="x86_64*"
+build_style=cmake
+configure_args="-Wno-dev -DIGC_OPTION__LLVM_PREFERRED_VERSION=19.1.4 -DCCLANG_FROM_SYSTEM=ON
+ -DIGC_OPTION__SPIRV_TOOLS_MODE=Prebuilds -DIGC_OPTION__USE_PREINSTALLED_SPIRV_HEADERS=ON
+ -Dlld_PATH=/usr/lib/llvm/19/bin/lld
+ -DlldELF_PATH=/usr/lib/llvm/19/bin/lld
+ -DlldCommon_PATH=/usr/lib/llvm/19/lib/liblldCommon.a
+ -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=/usr/lib/llvm/19/include
+ -DIGC_OPTION__VC_INTRINSICS_MODE=Prebuilds
+ -DLLVM_DIR=/usr/lib/llvm/19/lib/cmake/llvm"
+hostmakedepends="flex bison zlib-devel libzstd-devel cmake"
+makedepends="llvm19-devel clang19 clang-tools-extra19 intel-opencl-clang intel-vc-intrinsics
+ lld19 lld19-devel SPIRV-Headers SPIRV-LLVM-Translator19-devel SPIRV-Tools-devel python3-Mako
+ python3-yaml"
+short_desc="LLVM based compiler for OpenCL targeting Intel"
+maintainer="Zlice <zlice555@gmail.com>"
+license="MIT"
+homepage="https://github.com/intel/intel-graphics-compiler"
+distfiles="${homepage}/archive/refs/tags/v${version}.tar.gz"
+checksum=30348c8263dce8845a4330df09aab95100ac8bad2d04c0c58518fe27b153bbdd
+# musl: build generated ze???_int32_t types (e.g. zeinfo_int32_t)
+CXXFLAGS="-include cstdint"
+
+post_install() {
+	vlicense LICENSE.md
+}
