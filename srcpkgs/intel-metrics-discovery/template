@@ -1,0 +1,19 @@
+# Template file for 'intel-metrics-discovery'
+pkgname=intel-metrics-discovery
+version=1.14.185
+revision=1
+archs="x86_64*"
+build_style=cmake
+configure_args="-Wdev-no -DCMAKE_BUILD_TYPE=Release"
+hostmakedepends="cmake"
+makedepends="libdrm-devel"
+short_desc="Helper library that provides access to GPU performance data"
+maintainer="Zlice <zlice555@gmail.com>"
+license="MIT"
+homepage="https://github.com/intel/metrics-discovery"
+distfiles="${homepage}/archive/refs/tags/${version}.tar.gz"
+checksum=083977ac4701fd2dd114fa8365f86a9e2797f00a89da3d9daa7307b5a14d4a46
+
+post_install() {
+	vlicense LICENSE.md
+}
