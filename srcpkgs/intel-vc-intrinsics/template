@@ -1,0 +1,19 @@
+# Template file for 'intel-vc-intrinsics'
+pkgname=intel-vc-intrinsics
+version=0.23.1
+revision=1
+archs="x86_64*"
+build_style=cmake
+configure_args="-Wno-dev -DLLVM_DIR=/usr/lib/llvm/19/lib/cmake/llvm -DCMAKE_BUILD_TYPE=Release"
+hostmakedepends="cmake python"
+makedepends="llvm19-devel clang19 clang-tools-extra19"
+short_desc="Set of intrinsics on top of core LLVM IR"
+maintainer="Zlice <zlice555@gmail.com>"
+license="MIT"
+homepage="https://github.com/intel/vc-intrinsics"
+distfiles="${homepage}/archive/refs/tags/v${version}.tar.gz"
+checksum=c312420727d6f4ca832c2f02b6a0712f7cd17b45261232e2696ec8eed2962be9
+
+post_install() {
+	vlicense LICENSE.md
+}
