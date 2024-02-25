@@ -1,0 +1,19 @@
+# Template file for 'intel-metrics-library'
+pkgname=intel-metrics-library
+version=1.0.209.1
+revision=1
+archs="x86_64*"
+build_style=cmake
+configure_args="-Wdev-no -DCMAKE_BUILD_TYPE=Release"
+hostmakedepends="cmake"
+makedepends="libdrm-devel"
+short_desc="Helper library that provides access to GPU performance counters"
+maintainer="Zlice <zlice555@gmail.com>"
+license="MIT"
+homepage="https://github.com/intel/metrics-library"
+distfiles="${homepage}/archive/refs/tags/${version}.tar.gz"
+checksum=f208ee87588a89f090057a306fc45c98f5a27385e542f2e95006a6fd67482807
+
+post_install() {
+	vlicense LICENSE.md
+}
