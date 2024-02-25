@@ -1,0 +1,21 @@
+# Template file for 'intel-opencl-clang'
+pkgname=intel-opencl-clang
+version=19.1.0
+revision=1
+archs="x86_64*"
+build_style=cmake
+#configure_args="-Wno-dev -DLLVM_DIR=/usr/lib/llvm/19/lib/cmake/llvm -DPREFERRED_LLVM_VERSION=19.1.4"
+configure_args="-Wno-dev -DLLVM_DIR=/usr/lib/llvm/19/lib/cmake/llvm"
+hostmakedepends="cmake"
+makedepends="llvm19-devel clang19 clang-tools-extra19 SPIRV-LLVM-Translator19-devel"
+short_desc="LLVM linked opencl-clang"
+maintainer="Zlice <zlice555@gmail.com>"
+license="NCSA"
+homepage="https://github.com/intel/opencl-clang"
+distfiles="${homepage}/archive/refs/tags/v${version}.tar.gz"
+https://github.com/intel/opencl-clang/archive/refs/tags/v20.1.0.tar.gz
+checksum=25d0bdda45b93800705f834066c1e74910ddc2f944cd9dbc762c4c15cac9e117
+
+post_install() {
+	vlicense LICENSE
+}
