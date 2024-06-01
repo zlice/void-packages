@@ -1,0 +1,205 @@
+--- a/source/mupen64plus-core/projects/unix/Makefile	2019-02-10 13:25:29.000000000 -0500
++++ b/source/mupen64plus-core/projects/unix/Makefile	2024-06-01 14:36:58.883039099 -0400@@ -253,7 +253,7 @@
+@@ -56,7 +56,7 @@
+ endif
+
+ # detect system architecture
+-HOST_CPU ?= $(shell uname -m)
++HOST_CPU ?= ${XBPS_TARGET_MACHINE}
+ CPU := NONE
+ ifneq ("$(filter x86_64 amd64,$(HOST_CPU))","")
+   CPU := X86
+@@ -253,7 +253,7 @@
+
+ # test for essential build dependencies
+ ifeq ($(origin PKG_CONFIG), undefined)
+-  PKG_CONFIG = $(CROSS_COMPILE)pkg-config
++  PKG_CONFIG = pkg-config
+   ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
+     $(error $(PKG_CONFIG) not found)
+   endif
+@@ -313,9 +313,9 @@
+
+ # test for presence of SDL
+ ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
+-  SDL_CONFIG = $(CROSS_COMPILE)sdl2-config
++  SDL_CONFIG = sdl2-config
+   ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+-    SDL_CONFIG = $(CROSS_COMPILE)sdl-config
++    SDL_CONFIG = sdl-config
+     ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+       $(error No SDL development libraries found!)
+     else
+
+--- a/source/mupen64plus-audio-sdl/projects/unix/Makefile	2019-02-10 13:25:31.000000000 -0500
++++ b/source/mupen64plus-audio-sdl/projects/unix/Makefile	2024-06-01 15:04:56.529180224 -0400
+@@ -72,7 +72,7 @@
+ endif
+
+ # detect system architecture, only if it matters for build flags
+-HOST_CPU ?= $(shell uname -m)
++HOST_CPU ?= ${XBPS_TARGET_MACHINE}
+ CPU := OTHER
+ ifneq ("$(filter x86_64 amd64,$(HOST_CPU))","")
+   CPU := X86
+@@ -136,9 +136,9 @@
+
+ # test for presence of SDL
+ ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
+-  SDL_CONFIG = $(CROSS_COMPILE)sdl2-config
++  SDL_CONFIG = sdl2-config
+   ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+-    SDL_CONFIG = $(CROSS_COMPILE)sdl-config
++    SDL_CONFIG = sdl-config
+     ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+       $(error No SDL development libraries found!)
+     else
+@@ -153,7 +153,7 @@
+
+ # test for essential build dependencies
+ ifeq ($(origin PKG_CONFIG), undefined)
+-  PKG_CONFIG = $(CROSS_COMPILE)pkg-config
++  PKG_CONFIG = pkg-config
+   ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
+     $(error $(PKG_CONFIG) not found)
+   endif
+
+--- a/source/mupen64plus-rsp-hle/projects/unix/Makefile	2024-06-01 14:58:57.638025501 -0400
++++ b/source/mupen64plus-rsp-hle/projects/unix/Makefile	2024-06-01 14:57:52.779551800 -0400
+@@ -70,7 +70,7 @@
+ endif
+
+ # detect system architecture
+-HOST_CPU ?= $(shell uname -m)
++HOST_CPU ?= ${XBPS_TARGET_MACHINE}
+ NO_ASM ?= 1
+ CPU := NONE
+ ifneq ("$(filter x86_64 amd64,$(HOST_CPU))","")
+
+--- a/source/mupen64plus-video-rice/projects/unix/Makefile	2024-06-01 14:59:12.067353371 -0400
++++ b/source/mupen64plus-video-rice/projects/unix/Makefile	2024-06-01 14:57:52.780551822 -0400
+@@ -71,7 +71,7 @@
+ endif
+
+ # detect system architecture
+-HOST_CPU ?= $(shell uname -m)
++HOST_CPU ?= ${XBPS_TARGET_MACHINE}
+ CPU := NONE
+ ifneq ("$(filter x86_64 amd64,$(HOST_CPU))","")
+   CPU := X86
+@@ -113,6 +113,12 @@
+     $(warning Architecture "$(HOST_CPU)" not officially supported.')
+   endif
+ endif
++ifneq ("$(filter aarch64,$(HOST_CPU))","")
++    CPU := AARCH
++    ARCH_DETECTED := 64BITS
++    PIC ?= 1
++    NO_ASM := 1
++endif
+ ifeq ("$(CPU)","NONE")
+   $(error CPU type "$(HOST_CPU)" not supported.  Please file bug report at 'https://github.com/mupen64plus/mupen64plus-core/issues')
+ endif
+@@ -179,7 +179,7 @@
+
+ # test for essential build dependencies
+ ifeq ($(origin PKG_CONFIG), undefined)
+-  PKG_CONFIG = $(CROSS_COMPILE)pkg-config
++  PKG_CONFIG = pkg-config
+   ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
+     $(error $(PKG_CONFIG) not found)
+   endif
+@@ -223,9 +223,9 @@
+
+ # test for presence of SDL
+ ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
+-  SDL_CONFIG = $(CROSS_COMPILE)sdl2-config
++  SDL_CONFIG = sdl2-config
+   ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+-    SDL_CONFIG = $(CROSS_COMPILE)sdl-config
++    SDL_CONFIG = sdl-config
+     ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+       $(error No SDL development libraries found!)
+     else
+
+--- a/source/mupen64plus-input-sdl/projects/unix/Makefile	2024-06-01 14:59:23.169605633 -0400
++++ b/source/mupen64plus-input-sdl/projects/unix/Makefile	2024-06-01 14:57:52.780551822 -0400
+@@ -69,7 +69,7 @@
+ endif
+
+ # detect system architecture, only if it matters for build flags
+-HOST_CPU ?= $(shell uname -m)
++HOST_CPU ?= ${XBPS_TARGET_MACHINE}
+ CPU := OTHER
+ ifneq ("$(filter x86_64 amd64,$(HOST_CPU))","")
+   CPU := X86
+@@ -136,9 +136,9 @@
+
+ # test for presence of SDL
+ ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
+-  SDL_CONFIG = $(CROSS_COMPILE)sdl2-config
++  SDL_CONFIG = sdl2-config
+   ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+-    SDL_CONFIG = $(CROSS_COMPILE)sdl-config
++    SDL_CONFIG = sdl-config
+     ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+       $(error No SDL development libraries found!)
+     else
+
+--- a/source/mupen64plus-ui-console/projects/unix/Makefile	2024-06-01 14:59:38.258948487 -0400
++++ b/source/mupen64plus-ui-console/projects/unix/Makefile	2024-06-01 14:57:52.781551845 -0400
+@@ -52,7 +52,7 @@
+ endif
+
+ # detect system architecture, only if it matters for build flags
+-HOST_CPU ?= $(shell uname -m)
++HOST_CPU ?= ${XBPS_TARGET_MACHINE}
+ CPU := OTHER
+ ifneq ("$(filter x86_64 amd64,$(HOST_CPU))","")
+   CPU := X86
+@@ -102,9 +102,9 @@
+
+ # test for presence of SDL
+ ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
+-  SDL_CONFIG = $(CROSS_COMPILE)sdl2-config
++  SDL_CONFIG = sdl2-config
+   ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+-    SDL_CONFIG = $(CROSS_COMPILE)sdl-config
++    SDL_CONFIG = sdl-config
+     ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+       $(error No SDL development libraries found!)
+     else
+
+--- a/source/mupen64plus-video-glide64mk2/projects/unix/Makefile	2024-06-01 14:59:51.109240468 -0400
++++ b/source/mupen64plus-video-glide64mk2/projects/unix/Makefile	2024-06-01 14:57:52.781551845 -0400
+@@ -74,7 +74,7 @@
+ endif
+
+ # detect system architecture
+-HOST_CPU ?= $(shell uname -m)
++HOST_CPU ?= ${XBPS_TARGET_MACHINE}
+ CPU := NONE
+ ifneq ("$(filter x86_64 amd64,$(HOST_CPU))","")
+   CPU := X86
+@@ -165,7 +165,7 @@
+ endif
+
+ ifeq ($(origin PKG_CONFIG), undefined)
+-  PKG_CONFIG = $(CROSS_COMPILE)pkg-config
++  PKG_CONFIG = pkg-config
+   ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
+     $(error $(PKG_CONFIG) not found)
+   endif
+@@ -255,9 +255,9 @@
+
+ # test for presence of SDL
+ ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
+-  SDL_CONFIG = $(CROSS_COMPILE)sdl2-config
++  SDL_CONFIG = sdl2-config
+   ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+-    SDL_CONFIG = $(CROSS_COMPILE)sdl-config
++    SDL_CONFIG = sdl-config
+     ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+       $(error No SDL development libraries found!)
+     else
+
