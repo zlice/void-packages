@@ -2,7 +2,7 @@
 # audacity also needs to be bumped when a new ffmpeg version bumps libavformat's soname!
 pkgname=ffmpeg6
 version=6.1.2
-revision=8
+revision=9
 hostmakedepends="pkg-config perl"
 makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel libXfixes-devel
  libXext-devel libXvMC-devel libxcb-devel lame-devel libtheora-devel
@@ -23,6 +23,7 @@ homepage="https://www.ffmpeg.org"
 changelog="https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/Changelog"
 distfiles="https://www.ffmpeg.org/releases/ffmpeg-${version}.tar.xz"
 checksum=3b624649725ecdc565c903ca6643d41f33bd49239922e45c9b1442c63dca4e38
+depends="ffmpeg7"
 
 build_options="vaapi vdpau fdk_aac nvcodec libvpl"
 desc_option_sofa="Enable support for AES SOFA"
@@ -189,8 +190,8 @@ ffmpeg6-devel_package() {
 		libswscale6>=${version}_${revision}
 		libswresample6>=${version}_${revision}"
 	short_desc+=" - development files"
-	conflicts="ffmpeg-devel"
-	replaces="ffmpeg-devel>=0"
+	conflicts="ffmpeg-devel ffmpeg7-devel"
+	replaces="ffmpeg-devel>=0 ffmpeg7-devel>=0"
 	case "$XBPS_TARGET_MACHINE" in
 		i686*)
 		# /usr/bin/strip: error: the input file '/destdir//ffmpeg-devel-4.4.4/usr/lib/libavfilter.a(vf_atadenoise.o)' has no sections
@@ -208,8 +209,6 @@ ffmpeg6-devel_package() {
 
 ffplay6_package() {
 	short_desc="Simple video player using FFmpeg and SDL2"
-	pkg_install() {
-		vmove usr/bin/ffplay
-		vmove "usr/share/man/man1/ffplay*"
-	}
+	build_style="meta"
+	depends="ffplay7"
 }
