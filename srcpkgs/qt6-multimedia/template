@@ -7,7 +7,7 @@ configure_args="-DQT_FEATURE_gstreamer=ON"
 hostmakedepends="perl qt6-declarative-host-tools pkg-config qt6-shadertools"
 makedepends="qt6-base-private-devel qt6-declarative-private-devel
  qt6-quick3d-private-devel qt6-shadertools-devel
- pulseaudio-devel ffmpeg6-devel libva-devel
+ pulseaudio-devel ffmpeg7-devel libva-devel
  libglib-devel gst-plugins-bad1-devel gst-plugins-base1-devel"
 short_desc="Cross-platform application and UI framework - multimedia"
 maintainer="John <me@johnnynator.dev>"
