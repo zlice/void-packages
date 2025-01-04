@@ -2,7 +2,7 @@
 # audacity also needs to be bumped when a new ffmpeg version bumps libavformat's soname!
 pkgname=ffmpeg
 version=4.4.6
-revision=1
+revision=2
 metapackage=yes
 hostmakedepends="pkg-config perl"
 makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel libXfixes-devel
@@ -23,7 +23,7 @@ makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel libXfixes-deve
  $(vopt_if vulkan 'vulkan-loader-devel')
  $(vopt_if nvenc nv-codec-headers12.0) $(vopt_if nvdec nv-codec-headers12.0)"
 # ffmpeg6 provides ffmpeg, ffprobe, ffplay, etc
-depends="ffmpeg6"
+depends="ffmpeg7"
 short_desc="Decoding, encoding and streaming software (transitional dummy package)"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-3.0-or-later"
@@ -130,7 +130,7 @@ do_build() {
 }
 
 # transitional dummy package for ffmpeg6
-# binaries conflict with 6
+# binaries conflict with 7
 do_install() {
 	make DESTDIR=${DESTDIR} install
 	rm -rf ${DESTDIR}/usr/bin
@@ -214,8 +214,8 @@ ffmpeg-devel_package() {
 		libswresample>=${version}_${revision}
 		libavresample>=${version}_${revision}"
 	short_desc="Decoding, encoding and streaming software - development files"
-	conflicts="ffmpeg6-devel"
-	replaces="ffmpeg6-devel>=0"
+	conflicts="ffmpeg6-devel ffmpeg7-devel"
+	replaces="ffmpeg6-devel>=0 ffmpeg7-devel>=0"
 	case "$XBPS_TARGET_MACHINE" in
 		i686*)
 		# /usr/bin/strip: error: the input file '/destdir//ffmpeg-devel-4.4.4/usr/lib/libavfilter.a(vf_atadenoise.o)' has no sections
@@ -235,5 +235,5 @@ ffmpeg-devel_package() {
 ffplay_package() {
 	short_desc="Simple video player using FFmpeg and SDL2 (transitional dummy package)"
 	metapackage=yes
-	depends="ffplay6"
+	depends="ffplay7"
 }
