@@ -1,7 +1,7 @@
 # Template file for 'arcan'
 # !! keep synced with: acfgfs aclip aloadimage
 pkgname=arcan
-version=0.6.3.3
+version=0.7.0
 revision=1
 create_wrksrc=yes
 build_wrksrc=arcan/src
@@ -12,7 +12,7 @@ configure_args="-DDISTR_TAG='VoidLinux' -DVIDEO_PLATFORM=egl-dri
  $(vopt_if luajit '-DDISABLE_JIT=OFF' '-DDISABLE_JIT=ON')"
 hostmakedepends="pkg-config
  $(vopt_if wayland wayland-devel)"
-makedepends="MesaLib-devel ffmpeg6-devel file-devel freetype-devel liblzma-devel
+makedepends="MesaLib-devel ffmpeg7-devel file-devel freetype-devel liblzma-devel
  libopenal-devel libusb-devel libvncserver-devel libxkbcommon-devel sqlite-devel
  vlc-devel SDL2-devel xcb-util-devel xcb-util-wm-devel mupdf-devel
  $(vopt_if tts 'libespeak-ng-devel')
@@ -27,7 +27,7 @@ homepage="https://arcan-fe.com/"
 _versionOpenal=0.6.2
 distfiles="https://github.com/letoram/arcan/archive/${version}.tar.gz
  https://github.com/letoram/openal/archive/${_versionOpenal}.tar.gz>openal_arcan.${_versionOpenal}.tar.gz"
-checksum="77ae043899a28110012d6f930e101d173214e6649af87564d05ccfaca5d0d726
+checksum="d74593c01f3fc397ae4a9150f245072a8959cc195f9474839bd45b22273df1ca
  7c6ac2bd5228f56335da944f5a85b67d6dd95ba4d84f74be4209ba6aee38664b"
 
 export CMAKE_GENERATOR="Unix Makefiles"
