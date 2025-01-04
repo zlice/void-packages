@@ -12,7 +12,7 @@ hostmakedepends="qt6-base-devel perl pkg-config nodejs python3-html5lib
  qt6-declarative-host-tools gperf bison flex nss-devel"
 makedepends="qt6-base-private-devel qt6-declarative-private-devel
  qt6-svg-devel zlib-devel
- pciutils-devel opus-devel libxslt-devel libxml2-devel ffmpeg6-devel
+ pciutils-devel opus-devel libxslt-devel libxml2-devel ffmpeg7-devel
  lcms2-devel libwebp-devel icu-devel re2-devel snappy-devel libevent-devel
  libvpx-devel minizip-devel tiff-devel libpng-devel harfbuzz-devel
  freetype-devel libjpeg-turbo-devel nss-devel libxshmfence-devel"
