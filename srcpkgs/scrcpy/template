@@ -6,7 +6,7 @@ build_style=meson
 configure_args="-Dcompile_server=false
  -Dprebuilt_server=/usr/share/scrcpy/scrcpy-server-v${version}"
 hostmakedepends="pkg-config"
-makedepends="SDL2-devel ffmpeg6-devel"
+makedepends="SDL2-devel ffmpeg7-devel"
 depends="android-tools"
 short_desc="Display and control your Android device"
 maintainer="SolitudeSF <solitudesf@protonmail.com>"
