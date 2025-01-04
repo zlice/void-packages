@@ -1,0 +1,86 @@
+--- a/src/common/ffmpeg.cpp
++++ b/src/common/ffmpeg.cpp
+@@ -118,18 +118,15 @@
+         }
+     }
+     if (!isSupported && acodec->supported_samplerates) return MRET_ERR_NOCODEC;
+-    aenc->channels = av_get_channel_layout_nb_channels(aenc->channel_layout);
+-    aenc->channel_layout = AV_CH_LAYOUT_STEREO;
+-    if (acodec->channel_layouts)
++    if (acodec->ch_layouts)
+     {
+-        aenc->channel_layout = acodec->channel_layouts[0];
+-        for (int i = 0; acodec->channel_layouts[i]; ++i)
++        aenc->ch_layout = acodec->ch_layouts[0];
++        for (int i = 0; acodec->ch_layouts[i].nb_channels != 0; ++i) // ends in zeroed layout
+         {
+-            if (acodec->channel_layouts[i] == AV_CH_LAYOUT_STEREO)
+-                aenc->channel_layout = AV_CH_LAYOUT_STEREO;
++            if (acodec->ch_layouts[i].u.mask == AV_CH_LAYOUT_STEREO)
++                aenc->ch_layout = acodec->ch_layouts[i];
+         }
+     }
+-    aenc->channels = av_get_channel_layout_nb_channels(aenc->channel_layout);
+     aenc->time_base = { 1, aenc->sample_rate };
+     ast->time_base  = { 1, STREAM_FRAME_RATE };
+     // open and use codec on stream
+@@ -150,7 +147,7 @@
+     audioframeTmp = av_frame_alloc();
+     if (!audioframeTmp) return MRET_ERR_BUFSIZE;
+     audioframeTmp->format = IN_SOUND_FORMAT;
+-    audioframeTmp->channel_layout = aenc->channel_layout;
++    audioframeTmp->ch_layout = aenc->ch_layout;
+     audioframeTmp->sample_rate = aenc->sample_rate;
+     audioframeTmp->nb_samples = nb_samples;
+     if (nb_samples)
+@@ -162,7 +159,7 @@
+     audioframe = av_frame_alloc();
+     if (!audioframe) return MRET_ERR_BUFSIZE;
+     audioframe->format = aenc->sample_fmt;
+-    audioframe->channel_layout = aenc->channel_layout;
++    audioframe->ch_layout = aenc->ch_layout;
+     audioframe->sample_rate = aenc->sample_rate;
+     audioframe->nb_samples = nb_samples;
+     if (nb_samples)
+@@ -176,10 +173,10 @@
+     {
+         return MRET_ERR_BUFSIZE;
+     }
+-    av_opt_set_int       (swr, "in_channel_count",  aenc->channels,    0);
++    av_opt_set_int       (swr, "in_channel_count",  aenc->ch_layout.nb_channels,    0);
+     av_opt_set_int       (swr, "in_sample_rate",    aenc->sample_rate, 0);
+     av_opt_set_sample_fmt(swr, "in_sample_fmt",     IN_SOUND_FORMAT,   0);
+-    av_opt_set_int       (swr, "out_channel_count", aenc->channels,    0);
++    av_opt_set_int       (swr, "out_channel_count", aenc->ch_layout.nb_channels,    0);
+     av_opt_set_int       (swr, "out_sample_rate",   aenc->sample_rate, 0);
+     av_opt_set_sample_fmt(swr, "out_sample_fmt",    aenc->sample_fmt,  0);
+     if (swr_init(swr) < 0)
+@@ -188,8 +185,8 @@
+         return MRET_ERR_BUFSIZE;
+     }
+     // auxiliary buffer for setting up frames for encode
+-    audioBufferSize = nb_samples * aenc->channels * sizeof(uint16_t);
+-    audioBuffer = (uint16_t *) calloc(nb_samples * aenc->channels, sizeof(uint16_t));
++    audioBufferSize = nb_samples * aenc->ch_layout.nb_channels * sizeof(uint16_t);
++    audioBuffer = (uint16_t *) calloc(nb_samples * aenc->ch_layout.nb_channels, sizeof(uint16_t));
+     if (!audioBuffer) return MRET_ERR_BUFSIZE;
+     samplesInAudioBuffer = 0;
+     posInAudioBuffer = 0;
+@@ -547,7 +544,7 @@
+ {
+     if (!isRecording) return MRET_OK;
+     AVCodecContext *c = aenc;
+-    int samples_size = av_samples_get_buffer_size(NULL, c->channels, audioframeTmp->nb_samples, IN_SOUND_FORMAT, 1);
++    int samples_size = av_samples_get_buffer_size(NULL, c->ch_layout.nb_channels, audioframeTmp->nb_samples, IN_SOUND_FORMAT, 1);
+
+     int realLength = length / sizeof *aud;
+     bool isMissing = false;
+@@ -589,7 +586,7 @@
+     pkt.data = NULL;
+     pkt.size = 0;
+
+-    if (avcodec_fill_audio_frame(audioframeTmp, c->channels, IN_SOUND_FORMAT, (const uint8_t *)audioBuffer, samples_size, 1) < 0)
++    if (avcodec_fill_audio_frame(audioframeTmp, c->ch_layout.nb_channels, IN_SOUND_FORMAT, (const uint8_t *)audioBuffer, samples_size, 1) < 0)
+     {
+         return MRET_ERR_RECORDING;
+     }
