@@ -1,0 +1,48 @@
+--- a/src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp
++++ b/src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp
+@@ -99,9 +99,9 @@
+
+             memcpy(samples, frame->extended_data[0], plane_size);
+
+-            if (planar && avctx->channels > 1) {
++            if (planar && avctx->ch_layout.nb_channels > 1) {
+                 uint8_t *out = ((uint8_t *)samples) + plane_size;
+-                for (ch = 1; ch < avctx->channels; ch++) {
++                for (ch = 1; ch < avctx->ch_layout.nb_channels; ch++) {
+                     memcpy(out, frame->extended_data[ch], plane_size);
+                     out += plane_size;
+                 }
+@@ -163,7 +163,7 @@
+ 	m_context = avcodec_alloc_context3(p_codec);
+
+         m_in_sample_rate = avp->sample_rate;
+-        m_in_nb_channels = avp->channels;
++        m_in_nb_channels = avp->ch_layout.nb_channels;
+         m_in_sample_format = ((AVSampleFormat)(avp->format));
+
+         AVDictionaryEntry *opt_out_sample_rate = av_dict_get( *parameters->getOptions(), "out_sample_rate", NULL, 0 );
+@@ -198,17 +198,19 @@
+             m_in_sample_rate,
+             m_out_sample_rate);
+ #endif
+-            m_swr_context = swr_alloc_set_opts(NULL,
+-                    av_get_default_channel_layout(m_out_nb_channels),
++            AVChannelLayout *out_ch, *in_ch;
++            av_channel_layout_default(out_ch, m_out_nb_channels);
++            av_channel_layout_default(in_ch, m_in_nb_channels);
++
++            int err = swr_alloc_set_opts2(&m_swr_context,
++                    out_ch,
+                     m_out_sample_format,
+                     m_out_sample_rate,
+-                    av_get_default_channel_layout(m_in_nb_channels),
++                    in_ch,
+                     m_in_sample_format,
+                     m_in_sample_rate,
+                     0, NULL );
+
+-            int err = swr_init(m_swr_context);
+-
+             if ( err ) {
+                 char error_string[512];
+                 av_strerror(err, error_string, 512);
