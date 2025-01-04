@@ -1,0 +1,27 @@
+# Template file for 'pcsx2'
+pkgname=pcsx2
+version=2.0.2
+revision=1
+build_style=cmake
+configure_args="-DX11_API=ON -DWAYLAND_API=ON -DENABLE_SETCAP=OFF
+ -DDISABLE_ADVANCE_SIMD=TRUE -DCMAKE_BUILD_TYPE=Release"
+hostmakedepends="pkg-config qt6-tools shaderc extra-cmake-modules"
+makedepends="ffmpeg7-devel libjpeg-turbo-devel libXrandr-devel
+ libpcap-devel qt6-base-devel qt6-svg-devel SDL2-devel liblz4-devel
+ libwebp-devel qt6-wayland-devel soundtouch-devel freetype-devel
+ libcurl-devel pipewire-devel pulseaudio-devel"
+depends="desktop-file-utils"
+short_desc="PlayStation 2 (PS2) emulator"
+maintainer="zlice <zlice555@gmail.com>"
+license="LGPL-3.0-or-later, GPL-3.0-or-later"
+homepage="https://pcsx2.net"
+distfiles="https://github.com/PCSX2/pcsx2/archive/refs/tags/v${version}.tar.gz"
+checksum=01b84329b898348d57af34a604d4023bdb3ef8bb91e71b13a41cfba289e85f77
+#lib32disabled=yes
+
+#CFLAGS="-fcommon"
+#
+#pre_configure() {
+#	autoreconf -fi
+#	intltoolize -f
+#}
