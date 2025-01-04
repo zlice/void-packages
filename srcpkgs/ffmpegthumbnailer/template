@@ -1,10 +1,10 @@
 # Template file for 'ffmpegthumbnailer'
 pkgname=ffmpegthumbnailer
 version=2.2.3
-revision=1
+revision=2
 build_style=cmake
 hostmakedepends="pkg-config"
-makedepends="libpng-devel libjpeg-turbo-devel ffmpeg6-devel"
+makedepends="libpng-devel libjpeg-turbo-devel ffmpeg7-devel"
 depends="ffmpeg"
 short_desc="Lightweight video thumbnailer"
 maintainer="Orphaned <orphan@voidlinux.org>"
