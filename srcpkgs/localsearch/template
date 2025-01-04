@@ -14,7 +14,7 @@ configure_args="-Dextract=true -Dcue=enabled -Dexif=enabled
  -Dsystemd_user_services=false -Dnetwork_manager=enabled
  $(vopt_feature landlock)"
 hostmakedepends="pkg-config glib-devel intltool asciidoc"
-makedepends="tinysparql-devel ffmpeg6-devel dbus-devel exempi-devel
+makedepends="tinysparql-devel ffmpeg7-devel dbus-devel exempi-devel
  libglib-devel libgexiv2-devel gstreamer1-devel icu-devel libcue-devel
  libexif-devel libgsf-devel libgxps-devel libiptcdata-devel libjpeg-turbo-devel
  libosinfo-devel libpng-devel libseccomp-devel tiff-devel libxml2-devel
