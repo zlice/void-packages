@@ -1,12 +1,12 @@
 # Template file for 'spek-x'
 pkgname=spek-x
 version=0.9.3
-revision=1
+revision=2
 build_style=gnu-configure
 hostmakedepends="automake gettext-devel intltool libtool pkg-config
  wxWidgets-common wxWidgets-gtk3-devel"
-makedepends="ffmpeg6-devel wxWidgets-gtk3-devel"
-depends="ffmpeg6"
+makedepends="ffmpeg7-devel wxWidgets-gtk3-devel"
+depends="ffmpeg7"
 short_desc="Acoustic spectrum analyser"
 maintainer="zlice <zlice555@gmail.com>"
 license="GPL-3.0-or-later"

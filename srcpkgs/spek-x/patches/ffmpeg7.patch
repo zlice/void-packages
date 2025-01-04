@@ -1,0 +1,11 @@
+--- a/src/spek-audio.cc
++++ b/src/spek-audio.cc
+@@ -142,7 +142,7 @@
+         if (bits_per_sample) {
+             bit_rate = 0;
+         }
+-        channels = codecpar->channels;
++        channels = codecpar->ch_layout.nb_channels;
+
+         if (avstream->duration != AV_NOPTS_VALUE) {
+             duration = avstream->duration * av_q2d(avstream->time_base);
