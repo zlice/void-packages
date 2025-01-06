@@ -22,6 +22,7 @@ homepage="https://www.ffmpeg.org"
 changelog="https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/Changelog"
 distfiles="https://www.ffmpeg.org/releases/ffmpeg-${version}.tar.xz"
 checksum=3b624649725ecdc565c903ca6643d41f33bd49239922e45c9b1442c63dca4e38
+depends="ffmpeg7"
 
 build_options="vaapi vdpau fdk_aac nvcodec libvpl"
 desc_option_sofa="Enable support for AES SOFA"
