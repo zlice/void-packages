@@ -6,6 +6,7 @@ build_style=cmake
 configure_args="-DQT_FEATURE_qtpdf_build=ON
  -DQT_FEATURE_qtpdf_widgets_build=ON
  -DQT_FEATURE_qtpdf_quick_build=ON
+ -DQT_FEATURE_webengine_system_ffmpeg=ON
  -DNinja_EXECUTABLE=$XBPS_WRAPPERDIR/ninja
  -DQT_BUILD_EXAMPLES=ON"
 hostmakedepends="qt6-base-devel perl pkg-config nodejs python3-html5lib

@@ -1,0 +1,14 @@
+--- qt6-webengine-6.4.2.orig/configure.cmake
++++ qt6-webengine-6.4.2/configure.cmake
+@@ -558,11 +558,6 @@
+    CONDITION NOT LINUX OR DBUS_FOUND
+    MESSAGE "Build requires dbus."
+ )
+-add_check_for_support(
+-    MODULES QtWebEngine
+-    CONDITION NOT LINUX OR NOT QT_FEATURE_webengine_system_ffmpeg OR TEST_libavformat
+-    MESSAGE "Unmodified ffmpeg >= 5.0 is not supported."
+-)
+
+ add_check_for_support(
+    MODULES QtWebEngine
