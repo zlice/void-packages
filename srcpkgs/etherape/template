@@ -1,0 +1,22 @@
+# Template file for 'etherape'
+pkgname=etherape
+version=0.9.20
+revision=1
+build_style=gnu-configure
+hostmakedepends="pkg-config libtool automake gettext-devel"
+makedepends="libpcap-devel goocanvas-devel popt-devel glade3-devel"
+short_desc="Graphical Network Monitor"
+maintainer="zlice <zlice555@gmail.com>"
+license="GPL-2.0-or-later"
+homepage="https://etherape.sourceforge.io"
+distfiles="https://gitlab.com/rghetta/etherape/-/archive/rel-${version}/etherape-rel-${version}.tar.gz"
+checksum=6242ffe1faefd0db5a343834ab0201f3904508db20b8f76effcb09b77ebf957a
+system_groups="etherape"
+
+pre_configure() {
+	./autogen.sh
+}
+
+post_configure() {
+	vsed -e 's|^@YELP|\t@YELP|' -i doc/Makefile
+}
