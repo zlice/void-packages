@@ -1,7 +1,7 @@
 # Template file for 'nomad'
 pkgname=nomad
 version=2.1.1
-revision=1
+revision=2
 build_style=go
 go_import_path="github.com/hashicorp/nomad"
 go_build_tags="ui release"
@@ -18,6 +18,10 @@ make_dirs="/etc/nomad.d 0755 root root
 repository=nonfree
 # needs a nomad cluster?
 make_check=no
+
+post_extract() {
+	go mod vendor
+}
 
 post_install() {
 	vlicense LICENSE
